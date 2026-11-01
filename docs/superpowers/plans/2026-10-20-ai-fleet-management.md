@@ -1,4 +1,4 @@
-# AI Command Center Implementation Plan
+# AI Fleet Management Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -11,7 +11,7 @@
 
 **Tech Stack:** Go 1.26+ (gin, logrus, gjson) in `server/`; React 19 + TS + Vite + zustand, run with bun, in `panel/`.
 
-**Spec:** `docs/superpowers/specs/2026-10-20-ai-cmd-center-design.md` (read it first). The approved mockup is `docs/mockups/dashboard-options.html`, option A.
+**Spec:** `docs/superpowers/specs/2026-10-20-ai-fleet-management-design.md` (read it first). The approved mockup is `docs/mockups/dashboard-options.html`, option A.
 
 ## Global Constraints
 
@@ -414,8 +414,8 @@ Behaviour (matching mockup A):
   - `deploy/config.example.yaml`
   - `scripts/build.ps1` and `scripts/build.sh`: build the server binary into `dist/`, build the panel, and copy the single-file panel to `dist/static/management.html`
   - `deploy/windows/install-task.ps1`: Task Scheduler at logon
-  - `deploy/macos/com.aicmdcenter.proxy.plist`
-  - `deploy/linux/ai-cmd-center.service`
+  - `deploy/macos/com.aifleetmanagement.proxy.plist`
+  - `deploy/linux/ai-fleet-management.service`
   - `docs/setup.md`
   - `docs/UPSTREAM.md`
   - root `README.md`

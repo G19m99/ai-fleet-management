@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  launchd agent for AI Fleet Management: starts at login and restarts if it exits.
+
+  1. Replace every /Users/CHANGE-ME below with your home folder (echo $HOME).
+     The folder ~/ai-fleet-management must hold ai-fleet-management, config.yaml and static/management.html.
+  2. cp deploy/macos/com.aifleetmanagement.proxy.plist ~/Library/LaunchAgents/
+  3. launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.aifleetmanagement.proxy.plist
+  Stop/remove: launchctl bootout gui/$(id -u)/com.aifleetmanagement.proxy
+  Logs: ~/ai-fleet-management/proxy.log
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.aifleetmanagement.proxy</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/CHANGE-ME/ai-fleet-management/ai-fleet-management</string>
+    <string>-config</string>
+    <string>/Users/CHANGE-ME/ai-fleet-management/config.yaml</string>
+  </array>
+
+  <key>WorkingDirectory</key>
+  <string>/Users/CHANGE-ME/ai-fleet-management</string>
+
+  <key>RunAtLoad</key>
+  <true/>
+
+  <!-- Restart if it exits, e.g. when the Tailscale IP was not up yet and the bind failed. -->
+  <key>KeepAlive</key>
+  <true/>
+  <key>ThrottleInterval</key>
+  <integer>30</integer>
+
+  <key>StandardOutPath</key>
+  <string>/Users/CHANGE-ME/ai-fleet-management/proxy.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/CHANGE-ME/ai-fleet-management/proxy.log</string>
+</dict>
+</plist>

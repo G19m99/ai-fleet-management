@@ -1,10 +1,10 @@
-# Join a machine to AI Command Center
+# Join a machine to AI Fleet Management
 
-Use this guide to send another computer's Claude Code (and Codex) traffic through an AI Command Center host that's already running. Setting up the host itself is covered in [setup.md](setup.md).
+Use this guide to send another computer's Claude Code (and Codex) traffic through an AI Fleet Management host that's already running. Setting up the host itself is covered in [setup.md](setup.md).
 
 You need:
 - The host's Tailscale IPv4 address (`tailscale ip -4` on the host). Below it's `<tailscale-ip>`.
-- Access to the host's `config.yaml`, in the folder the server runs from (`<install-dir>`, e.g. `C:\ai-cmd-center`).
+- Access to the host's `config.yaml`, in the folder the server runs from (`<install-dir>`, e.g. `C:\ai-fleet-management`).
 - The Tailscale account the host is signed in to.
 - Claude Code (and Codex, if you use it) installed on the new machine.
 
@@ -84,16 +84,16 @@ Then restart Claude Code. Sessions that were already open keep their old connect
 Add a provider to `~/.codex/config.toml` (Windows: `%USERPROFILE%\.codex\config.toml`) and make it the default:
 
 ```toml
-model_provider = "ai-cmd-center"
+model_provider = "ai-fleet-management"
 
-[model_providers.ai-cmd-center]
-name = "AI Command Center"
+[model_providers.ai-fleet-management]
+name = "AI Fleet Management"
 base_url = "http://<tailscale-ip>:8317/v1"
-env_key = "AI_CMD_CENTER_KEY"
+env_key = "AI_FLEET_MANAGEMENT_KEY"
 wire_api = "responses"
 ```
 
-Then set the key where Codex runs: `setx AI_CMD_CENTER_KEY "<new machine key>"` on Windows (open a new terminal afterwards), or `export AI_CMD_CENTER_KEY="<new machine key>"` in `~/.bashrc` or `~/.zshrc`. This block follows Codex's documented custom-provider format. Verify it against your Codex version; [setup.md](setup.md) section 7 has an alternative if it misbehaves.
+Then set the key where Codex runs: `setx AI_FLEET_MANAGEMENT_KEY "<new machine key>"` on Windows (open a new terminal afterwards), or `export AI_FLEET_MANAGEMENT_KEY="<new machine key>"` in `~/.bashrc` or `~/.zshrc`. This block follows Codex's documented custom-provider format. Verify it against your Codex version; [setup.md](setup.md) section 7 has an alternative if it misbehaves.
 
 ## 5. Check that it works
 

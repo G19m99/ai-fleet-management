@@ -1,4 +1,4 @@
-# AI Command Center
+# AI Fleet Management
 
 A self-hosted proxy for your Claude and ChatGPT/Codex subscriptions. Claude Code and Codex CLI on your machines point at it, and it decides which account serves each request:
 
@@ -33,7 +33,7 @@ Then follow [docs/setup.md](docs/setup.md): configure, log in to the accounts, r
 
 - Adding another computer to a running host: [docs/join-a-machine.md](docs/join-a-machine.md)
 - Pulling upstream fixes: [docs/UPSTREAM.md](docs/UPSTREAM.md)
-- Design: [docs/superpowers/specs/2026-10-20-ai-cmd-center-design.md](docs/superpowers/specs/2026-10-20-ai-cmd-center-design.md)
+- Design: [docs/superpowers/specs/2026-10-20-ai-fleet-management-design.md](docs/superpowers/specs/2026-10-20-ai-fleet-management-design.md)
 
 ## Terms of service
 

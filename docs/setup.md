@@ -1,11 +1,11 @@
-# AI Command Center: setup
+# AI Fleet Management: setup
 
 One instance runs on the **host** (your other machine). Both machines reach it over Tailscale. Claude Code and Codex CLI on each machine point at it instead of logging in directly.
 
 Throughout this guide:
 - `<tailscale-ip>` is the host's Tailscale IPv4 address (from `tailscale ip -4` on the host, e.g. `100.101.102.103`).
-- `<install-dir>` is the folder you run it from on the host, e.g. `C:\ai-cmd-center`, `~/ai-cmd-center` or `/opt/ai-cmd-center`.
-- The binary is `ai-cmd-center` (`ai-cmd-center.exe` on Windows).
+- `<install-dir>` is the folder you run it from on the host, e.g. `C:\ai-fleet-management`, `~/ai-fleet-management` or `/opt/ai-fleet-management`.
+- The binary is `ai-fleet-management` (`ai-fleet-management.exe` on Windows).
 
 ## 1. Prerequisites
 
@@ -36,7 +36,7 @@ This produces:
 
 ```
 dist/
-  ai-cmd-center(.exe)        server
+  ai-fleet-management(.exe)  server
   static/management.html     dashboard
   config.example.yaml        config template
 ```
@@ -104,15 +104,15 @@ The routing settings in the template are already the intended defaults (`strateg
 
 ## 4. Log in to the accounts
 
-On the host, from `<install-dir>`. Each login opens a browser for OAuth and saves a credential file into `oauth.auth-dir` (default in the template: `~/.ai-cmd-center/auths`).
+On the host, from `<install-dir>`. Each login opens a browser for OAuth and saves a credential file into `oauth.auth-dir` (default in the template: `~/.ai-fleet-management/auths`).
 
 ```bash
-./ai-cmd-center -config config.yaml -claude-login    # Claude account 1
-./ai-cmd-center -config config.yaml -claude-login    # Claude account 2
-./ai-cmd-center -config config.yaml -codex-login     # ChatGPT/Codex account
+./ai-fleet-management -config config.yaml -claude-login    # Claude account 1
+./ai-fleet-management -config config.yaml -claude-login    # Claude account 2
+./ai-fleet-management -config config.yaml -codex-login     # ChatGPT/Codex account
 ```
 
-(On Windows: `.\ai-cmd-center.exe -config config.yaml -claude-login`, and so on.)
+(On Windows: `.\ai-fleet-management.exe -config config.yaml -claude-login`, and so on.)
 
 - For the second Claude login, make sure the browser signs in to the *other* account. Use a private window, or sign out of claude.ai first.
 - **Headless host:** add `-no-browser`. The command prints the login URL instead of opening a browser; open it on any machine. The OAuth callback goes to `localhost` on the host (Claude port 54545, Codex port 1455), so when the browser is on another machine, forward that port first, e.g. `ssh -L 54545:localhost:54545 user@host` (verify: not tested here). For Codex, `-codex-device-login` uses a device-code flow with no callback.
@@ -124,7 +124,7 @@ On the host, from `<install-dir>`. Each login opens a browser for OAuth and save
 Run it once by hand first to check the config:
 
 ```bash
-./ai-cmd-center -config config.yaml
+./ai-fleet-management -config config.yaml
 ```
 
 **Don't trust the `API server started successfully` line on its own.** The server prints it before the listener has actually bound. If the bind fails (wrong `server.host`, or Tailscale has no IP yet), it then logs `failed to start HTTP server: listen tcp ...: bind: ...` and exits. To confirm it's really up, from either machine:
@@ -143,18 +143,18 @@ Stop it with Ctrl+C, then set up one of these. Each one restarts the server when
 ### Windows (Task Scheduler, at logon)
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File deploy\windows\install-task.ps1 -InstallDir C:\ai-cmd-center
-Start-ScheduledTask -TaskName 'AI Command Center'
+powershell -ExecutionPolicy Bypass -File deploy\windows\install-task.ps1 -InstallDir C:\ai-fleet-management
+Start-ScheduledTask -TaskName 'AI Fleet Management'
 ```
 
 What the task does:
 - It runs as you, 30 seconds after you log on.
 - It runs `run-proxy.ps1` (copied into `<install-dir>`) in a hidden PowerShell window, so there's no console window to close by accident.
-- That script starts `ai-cmd-center.exe`, waits for it to exit, and starts it again after 15 seconds. Task Scheduler's own restart setting only covers a failed launch, not the program exiting, so the script does the restarting.
+- That script starts `ai-fleet-management.exe`, waits for it to exit, and starts it again after 15 seconds. Task Scheduler's own restart setting only covers a failed launch, not the program exiting, so the script does the restarting.
 
 Logs:
 - `run-proxy.log` in `<install-dir>`: one timestamped line per start and exit. Repeated `exited ... restarting` lines mean it keeps failing; check the server log.
-- `main.log` in `~/.ai-cmd-center/auths/logs`: the server's log, also shown on the dashboard's **Logs Viewer** page. The template turns on `observability.logs.logging-to-file` and caps the folder at 100 MB. With file logging off, these lines go to `proxy.out.log` instead and the Logs Viewer says "File logging is required".
+- `main.log` in `~/.ai-fleet-management/auths/logs`: the server's log, also shown on the dashboard's **Logs Viewer** page. The template turns on `observability.logs.logging-to-file` and caps the folder at 100 MB. With file logging off, these lines go to `proxy.out.log` instead and the Logs Viewer says "File logging is required".
 - `error-*.log` in the same folder: the last 10 failed requests, including their prompts. Request logging (`request-log`) stays off, so successful requests aren't saved.
 - `proxy.out.log` in `<install-dir>`: the few messages the server prints outside its log, from its latest run.
 
@@ -163,32 +163,32 @@ Note that the task runs at **logon**, not at boot, so a user must be logged in o
 To stop or remove it:
 
 ```powershell
-Stop-ScheduledTask -TaskName 'AI Command Center'; Get-Process ai-cmd-center -ErrorAction SilentlyContinue | Stop-Process
-Unregister-ScheduledTask -TaskName 'AI Command Center' -Confirm:$false    # remove
+Stop-ScheduledTask -TaskName 'AI Fleet Management'; Get-Process ai-fleet-management -ErrorAction SilentlyContinue | Stop-Process
+Unregister-ScheduledTask -TaskName 'AI Fleet Management' -Confirm:$false    # remove
 ```
 
 ### macOS (launchd)
 
-1. Edit `deploy/macos/com.aicmdcenter.proxy.plist` and replace `/Users/CHANGE-ME` with your home folder. It expects `<install-dir>` = `~/ai-cmd-center`.
+1. Edit `deploy/macos/com.aifleetmanagement.proxy.plist` and replace `/Users/CHANGE-ME` with your home folder. It expects `<install-dir>` = `~/ai-fleet-management`.
 2. Install and start it:
 
 ```bash
-cp deploy/macos/com.aicmdcenter.proxy.plist ~/Library/LaunchAgents/
-launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.aicmdcenter.proxy.plist
+cp deploy/macos/com.aifleetmanagement.proxy.plist ~/Library/LaunchAgents/
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.aifleetmanagement.proxy.plist
 ```
 
-Logs go to `~/ai-cmd-center/proxy.log`. Stop it with `launchctl bootout gui/$(id -u)/com.aicmdcenter.proxy`.
+Logs go to `~/ai-fleet-management/proxy.log`. Stop it with `launchctl bootout gui/$(id -u)/com.aifleetmanagement.proxy`.
 
 ### Linux (systemd)
 
-1. Edit `deploy/linux/ai-cmd-center.service`: set `User=` to the account you logged in with in step 4 (its `~` is where the auth files are). It expects `<install-dir>` = `/opt/ai-cmd-center`, owned by that user.
+1. Edit `deploy/linux/ai-fleet-management.service`: set `User=` to the account you logged in with in step 4 (its `~` is where the auth files are). It expects `<install-dir>` = `/opt/ai-fleet-management`, owned by that user.
 2. Install and start it:
 
 ```bash
-sudo cp deploy/linux/ai-cmd-center.service /etc/systemd/system/
+sudo cp deploy/linux/ai-fleet-management.service /etc/systemd/system/
 sudo systemctl daemon-reload
-sudo systemctl enable --now ai-cmd-center
-journalctl -u ai-cmd-center -f
+sudo systemctl enable --now ai-fleet-management
+journalctl -u ai-fleet-management -f
 ```
 
 ## 6. Point Claude Code at it
@@ -238,23 +238,23 @@ Restart Claude Code sessions that were already open. They keep their old connect
 Add a provider to `~/.codex/config.toml` (Windows: `%USERPROFILE%\.codex\config.toml`) and make it the default:
 
 ```toml
-model_provider = "ai-cmd-center"
+model_provider = "ai-fleet-management"
 
-[model_providers.ai-cmd-center]
-name = "AI Command Center"
+[model_providers.ai-fleet-management]
+name = "AI Fleet Management"
 base_url = "http://<tailscale-ip>:8317/v1"
-env_key = "AI_CMD_CENTER_KEY"
+env_key = "AI_FLEET_MANAGEMENT_KEY"
 wire_api = "responses"
 ```
 
 Then set the key in the environment Codex runs in:
 
 ```powershell
-$env:AI_CMD_CENTER_KEY = "<machine key>"     # or: setx AI_CMD_CENTER_KEY "<machine key>"
+$env:AI_FLEET_MANAGEMENT_KEY = "<machine key>"     # or: setx AI_FLEET_MANAGEMENT_KEY "<machine key>"
 ```
 
 ```bash
-export AI_CMD_CENTER_KEY="<machine key>"
+export AI_FLEET_MANAGEMENT_KEY="<machine key>"
 ```
 
 The proxy serves the Responses API at `/v1/responses` and lists models at `/v1/models`. Upstream's in-repo docs don't spell out the Codex `config.toml` wiring (they point to <https://help.router-for.me/>), so the block above follows Codex's documented custom-provider format: **verify** it against your Codex version. Upstream also serves `/backend-api/codex/responses` "for chatgpt_base_url compatibility", an alternative if the provider block misbehaves (verify).
@@ -299,10 +299,10 @@ The dashboard is served over plain `http://`. That's expected here. Tailscale en
 
 **Can't connect at all**
 Check that `tailscale status` shows the host online, that `server.host` in `config.yaml` still matches `tailscale ip -4`, and that the server is actually listening: run the `curl .../v1/models` check from section 5. For the server's output, see:
-- Any OS: `main.log` in `~/.ai-cmd-center/auths/logs`, or the dashboard's **Logs Viewer**
+- Any OS: `main.log` in `~/.ai-fleet-management/auths/logs`, or the dashboard's **Logs Viewer**
 - Windows: `run-proxy.log` and `proxy.out.log` in `<install-dir>`
-- macOS: `~/ai-cmd-center/proxy.log`
-- Linux: `journalctl -u ai-cmd-center`
+- macOS: `~/ai-fleet-management/proxy.log`
+- Linux: `journalctl -u ai-fleet-management`
 
 A `bind: ...` error means `server.host` isn't an address this machine has right now.
 

@@ -1,4 +1,4 @@
-# AI Command Center configuration template.
+# AI Fleet Management configuration template.
 #
 # Based on server/config.example.yaml (the upstream v8 layout). It holds only the
 # settings this deployment cares about. Every other option keeps its upstream
@@ -33,7 +33,7 @@ management:
   # (see docs/setup.md, "Generate keys"). Empty disables the management API.
   secret-key: "CHANGE-ME"
 
-  # Keep the locally built AI Command Center panel (static/management.html).
+  # Keep the locally built AI Fleet Management panel (static/management.html).
   # Without this, the server would replace it with the upstream panel from GitHub.
   disable-auto-update-panel: true
 
@@ -75,13 +75,13 @@ routing:
 # OAuth credentials created by -claude-login / -codex-login.
 oauth:
   # Authentication directory (supports ~ for the home directory). Legacy name: top-level auth-dir.
-  auth-dir: "~/.ai-cmd-center/auths"
+  auth-dir: "~/.ai-fleet-management/auths"
 
 # Application logs. File logging feeds the dashboard's Logs Viewer.
 observability:
   logs:
     # Write application logs to rotating files (main.log). With the auth-dir above
-    # they land in ~/.ai-cmd-center/auths/logs.
+    # they land in ~/.ai-fleet-management/auths/logs.
     logging-to-file: true
     # Delete the oldest log files once the folder passes this size (MB).
     logs-max-total-size-mb: 100

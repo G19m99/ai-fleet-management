@@ -1,27 +1,27 @@
-# Registers a Task Scheduler task that starts AI Command Center when you log on.
+# Registers a Task Scheduler task that starts AI Fleet Management when you log on.
 # The task runs run-proxy.ps1 (copied into InstallDir) in a hidden PowerShell window.
 # That script restarts the server whenever it exits, e.g. when the bind fails because
 # Tailscale has no IP yet. Task Scheduler's restart setting only covers a failed launch.
 #
 # Usage (from an elevated or normal PowerShell; normal is enough for a per-user task):
-#   powershell -ExecutionPolicy Bypass -File deploy\windows\install-task.ps1 -InstallDir C:\ai-cmd-center
+#   powershell -ExecutionPolicy Bypass -File deploy\windows\install-task.ps1 -InstallDir C:\ai-fleet-management
 #
-# InstallDir must contain ai-cmd-center.exe, config.yaml and static\management.html
+# InstallDir must contain ai-fleet-management.exe, config.yaml and static\management.html
 # (copy the contents of dist\ there and create config.yaml from config.example.yaml).
 #
 # Stop it with:
-#   Stop-ScheduledTask -TaskName 'AI Command Center'; Get-Process ai-cmd-center -ErrorAction SilentlyContinue | Stop-Process
+#   Stop-ScheduledTask -TaskName 'AI Fleet Management'; Get-Process ai-fleet-management -ErrorAction SilentlyContinue | Stop-Process
 # Remove the task with:
-#   Unregister-ScheduledTask -TaskName 'AI Command Center' -Confirm:$false
+#   Unregister-ScheduledTask -TaskName 'AI Fleet Management' -Confirm:$false
 param(
     [Parameter(Mandatory = $true)]
     [string]$InstallDir,
-    [string]$TaskName = 'AI Command Center'
+    [string]$TaskName = 'AI Fleet Management'
 )
 $ErrorActionPreference = 'Stop'
 
 $InstallDir = (Resolve-Path $InstallDir).Path
-$exe = Join-Path $InstallDir 'ai-cmd-center.exe'
+$exe = Join-Path $InstallDir 'ai-fleet-management.exe'
 $config = Join-Path $InstallDir 'config.yaml'
 
 foreach ($path in $exe, $config, (Join-Path $InstallDir 'static\management.html')) {

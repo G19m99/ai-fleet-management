@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Builds AI Command Center into dist/:
-#   dist/ai-cmd-center[.exe]       server binary (from server/)
-#   dist/static/management.html    dashboard (from panel/)
-#   dist/config.example.yaml       config template (from deploy/)
+# Builds AI Fleet Management into dist/:
+#   dist/ai-fleet-management[.exe]   server binary (from server/)
+#   dist/static/management.html      dashboard (from panel/)
+#   dist/config.example.yaml         config template (from deploy/)
 #
 # Requires `go` and `bun` on PATH. Works on macOS, Linux and Git Bash on Windows:
 #   ./scripts/build.sh
@@ -26,7 +26,7 @@ esac
 mkdir -p "$dist/static"
 
 echo "==> Building server"
-(cd "$root/server" && go build -o "$dist/ai-cmd-center$exe" ./cmd/server)
+(cd "$root/server" && go build -o "$dist/ai-fleet-management$exe" ./cmd/server)
 
 echo "==> Building panel"
 (cd "$root/panel" && bun install --frozen-lockfile && bun run build)

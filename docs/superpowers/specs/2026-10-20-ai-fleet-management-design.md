@@ -1,4 +1,4 @@
-# AI Command Center — Design
+# AI Fleet Management — Design
 
 Date: 2026-10-20
 Status: draft, awaiting approval
@@ -13,7 +13,7 @@ Inspiration: Theo's modified CLIProxyAPI setup ("CPAMC" quota page, video https:
 
 ## Decisions made by the user
 
-- **Fork CLIProxyAPI** (as Theo did), not a fresh project. All code lives in `C:\dev\ai-cmd-center`.
+- **Fork CLIProxyAPI** (as Theo did), not a fresh project. All code lives in `C:\dev\ai-fleet-management`.
 - **Routing rule:** for each provider, new work goes to the account whose weekly limit resets soonest and still has headroom.
 - **Affinity rule:** a conversation stays on its account while active. Once it has been idle longer than **that provider's prompt-cache lifetime**, its next turn is re-routed by the routing rule. This resolves the conflict where a session pinned to account B keeps running after A frees up: B keeps it while active, A gets it back after idle.
 - **Urgency beats affinity:** if the account that should be drained first resets soon (e.g. tomorrow) with allowance left, sessions on other accounts move to it on their next turn even if their cache is warm. "I don't care to be inefficient and swap accounts, because I need to get this account drained in time."
@@ -170,7 +170,7 @@ Copy-paste config for both machines:
 
 ## Repository layout
 
-`C:\dev\ai-cmd-center` is one git repo:
+`C:\dev\ai-fleet-management` is one git repo:
 - `server/`: the fork of CLIProxyAPI.
 - `panel/`: the fork of the management center.
 - `docs/`: this spec and the setup guides.

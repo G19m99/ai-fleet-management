@@ -25,7 +25,7 @@ cd ../panel && bun install && bun run test && bun run build
 cd .. && ./scripts/build.sh                                     # or scripts\build.ps1
 ```
 
-Then do the smoke test (start `dist/ai-cmd-center` with a test config, check `/v0/management/routing-state` and `/management.html`) before merging back.
+Then do the smoke test (start `dist/ai-fleet-management` with a test config, check `/v0/management/routing-state` and `/management.html`) before merging back.
 
 Things to watch in upstream changes:
 - `routing.*` config keys and `sdk/cliproxy/auth/selector.go` / `session_cache.go`, which our selector and per-provider TTL hook into.

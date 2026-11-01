@@ -1,7 +1,7 @@
-# Builds AI Command Center into dist/:
-#   dist/ai-cmd-center.exe         server binary (from server/)
-#   dist/static/management.html    dashboard (from panel/)
-#   dist/config.example.yaml       config template (from deploy/)
+# Builds AI Fleet Management into dist/:
+#   dist/ai-fleet-management.exe     server binary (from server/)
+#   dist/static/management.html      dashboard (from panel/)
+#   dist/config.example.yaml         config template (from deploy/)
 #
 # Requires `go` and `bun` on PATH. Run from any directory:
 #   powershell -ExecutionPolicy Bypass -File scripts\build.ps1
@@ -22,7 +22,7 @@ New-Item -ItemType Directory -Force -Path $static | Out-Null
 Write-Host '==> Building server'
 Push-Location (Join-Path $root 'server')
 try {
-    & go build -o (Join-Path $dist 'ai-cmd-center.exe') ./cmd/server
+    & go build -o (Join-Path $dist 'ai-fleet-management.exe') ./cmd/server
     if ($LASTEXITCODE -ne 0) { throw "go build failed ($LASTEXITCODE)" }
 } finally {
     Pop-Location

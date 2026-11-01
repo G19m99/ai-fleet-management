@@ -1,0 +1,25 @@
+# systemd unit for AI Fleet Management.
+#
+# 1. Replace CHANGE-ME with the user that ran -claude-login / -codex-login
+#    (the OAuth files live under that user's auth-dir).
+#    /opt/ai-fleet-management must hold ai-fleet-management, config.yaml and static/management.html.
+# 2. sudo cp deploy/linux/ai-fleet-management.service /etc/systemd/system/
+# 3. sudo systemctl daemon-reload && sudo systemctl enable --now ai-fleet-management
+# Logs: journalctl -u ai-fleet-management -f
+[Unit]
+Description=AI Fleet Management (reset-aware CLIProxyAPI)
+# Bind needs the Tailscale address, so start after tailscaled.
+Wants=network-online.target tailscaled.service
+After=network-online.target tailscaled.service
+
+[Service]
+Type=simple
+User=CHANGE-ME
+WorkingDirectory=/opt/ai-fleet-management
+ExecStart=/opt/ai-fleet-management/ai-fleet-management -config /opt/ai-fleet-management/config.yaml
+# Retry if the Tailscale IP was not assigned yet and the bind failed.
+Restart=always
+RestartSec=15
+
+[Install]
+WantedBy=multi-user.target
