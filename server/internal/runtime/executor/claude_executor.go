@@ -268,6 +268,21 @@ func (e *ClaudeExecutor) modelLevelCooling() bool {
 	return e != nil && e.cfg != nil && e.cfg.Claude.ModelLevelCooling
 }
 
+// modelLevelCoolingFor reports whether a 429 for upstreamModel on auth should
+// cool down only that model. Besides the config switch, a fresh quota snapshot
+// that shows only a model-scoped window (such as the weekly Fable limit)
+// exhausted while the all-models windows have headroom proves the rejection
+// belongs to the model, whatever shape the rate-limit headers take.
+func (e *ClaudeExecutor) modelLevelCoolingFor(auth *cliproxyauth.Auth, upstreamModel string) bool {
+	if e.modelLevelCooling() {
+		return true
+	}
+	if auth == nil || strings.TrimSpace(auth.ID) == "" {
+		return false
+	}
+	return cliproxyauth.DefaultQuotaSnapshots().ModelOnlyLimit(auth.ID, upstreamModel, time.Now())
+}
+
 func (e *ClaudeExecutor) upstreamRequestLogProvider() string {
 	if provider := strings.TrimSpace(e.requestLogProvider); provider != "" {
 		return provider
