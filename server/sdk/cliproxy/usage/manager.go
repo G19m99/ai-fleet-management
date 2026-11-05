@@ -88,9 +88,14 @@ type Detail struct {
 	CachedTokens        int64
 	CacheReadTokens     int64
 	CacheCreationTokens int64
-	TotalTokens         int64
-	TokenBreakdown      TokenBreakdown
-	ResponseServiceTier string
+	// CacheCreation1hTokens is the part of CacheCreationTokens written with the
+	// 1-hour TTL (Claude usage.cache_creation.ephemeral_1h_input_tokens).
+	CacheCreation1hTokens int64
+	TotalTokens           int64
+	TokenBreakdown        TokenBreakdown
+	ResponseServiceTier   string
+	// Speed is the upstream-reported speed tier (Claude usage.speed), e.g. "fast".
+	Speed string
 }
 
 type requestedModelAliasContextKey struct{}

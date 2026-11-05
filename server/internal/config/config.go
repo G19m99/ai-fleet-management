@@ -74,6 +74,10 @@ type Config struct {
 	// UsageStatisticsEnabled toggles in-memory usage aggregation; when false, usage data is discarded.
 	UsageStatisticsEnabled bool `yaml:"usage-statistics-enabled" json:"usage-statistics-enabled"`
 
+	// UsageHistoryEnabled appends one line per request to <auth-dir>/usage/YYYY-MM.jsonl
+	// for the panel's usage history. Default: true.
+	UsageHistoryEnabled bool `yaml:"usage-history-enabled" json:"usage-history-enabled"`
+
 	// RedisUsageQueueRetentionSeconds controls how long usage queue items are retained
 	// in memory for Management API consumers.
 	// Default: 60. Max: 3600.

@@ -272,6 +272,7 @@ func (s *Service) applyManagerConfig(ctx context.Context, commit configCommit) b
 		s.appliedRoutingState = &routingState
 	}
 	s.syncQuotaPoller(commit.cfg)
+	s.syncUsageHistory(commit.cfg)
 	s.applyRetryConfig(commit.cfg)
 	store := s.resolveCooldownStateStore(commit.cfg)
 	if !s.coreManager.ApplyConfigWithCooldownStateStore(ctx, commit.cfg, store) {
