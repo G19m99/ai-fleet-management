@@ -274,6 +274,18 @@ curl -s -H "Authorization: Bearer <dashboard password>" http://<tailscale-ip>:83
 
 It returns `"strategy":"reset-aware"` and one entry per account under `accounts`.
 
+### Usage history
+
+The proxy writes one line per request to `<auth-dir>/usage/YYYY-MM.jsonl`: account, model, and input, output, cache-read and cache-write tokens. The dashboard's **Usage** page shows a month at a time, per account or with all Claude accounts combined. It breaks the month down by model and by day and shows the API-equivalent cost, meaning what the same tokens would cost at Anthropic's standard API prices. Recording is on by default. Turn it off with `observability.usage.usage-history-enabled: false`.
+
+To fill in the time before recording started, import Claude Code's transcripts once on the host. The proxy can keep running:
+
+```powershell
+C:\ai-fleet-management\ai-fleet-management.exe -config C:\ai-fleet-management\config.yaml -import-usage
+```
+
+It matches each transcript reply to the account that served it using the proxy's logs (`<auth-dir>/logs/main*.log`), and stops at the first request the proxy recorded itself, so nothing is counted twice. Replies from before the proxy's oldest log have no account and show as **Unknown account**. Only this machine's transcripts are read. To include another machine, copy its `~/.claude/projects` folder over and add `-import-usage-transcripts <folder>`. Running the import again is safe: records are merged by message id. Imported days undercount a little, because Claude Code's transcripts leave out its background requests.
+
 ## 9. Troubleshooting
 
 **"All Claude accounts are limited. Earliest frees at 3:40 PM (claude-a, 5-hour limit)."**
