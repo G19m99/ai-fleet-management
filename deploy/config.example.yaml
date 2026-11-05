@@ -88,3 +88,7 @@ observability:
     # Keep false: true saves full prompts and responses to disk. Failed requests
     # are still saved there as error-*.log files, the last 10 only.
     request-log: false
+  usage:
+    # One line per request (account, model, token counts) in <auth-dir>/usage/
+    # for the dashboard's Usage page. No prompt or response content is stored.
+    usage-history-enabled: true

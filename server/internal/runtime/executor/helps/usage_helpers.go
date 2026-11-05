@@ -1194,12 +1194,14 @@ func parseClaudeUsageNode(usageNode gjson.Result) usage.Detail {
 		nonReasoningOutput = 0
 	}
 	detail := usage.Detail{
-		InputTokens:         usageNode.Get("input_tokens").Int(),
-		OutputTokens:        rawOutputTokens,
-		ReasoningTokens:     reasoningTokens,
-		CachedTokens:        cacheReadTokens,
-		CacheReadTokens:     cacheReadTokens,
-		CacheCreationTokens: cacheCreationTokens,
+		InputTokens:           usageNode.Get("input_tokens").Int(),
+		OutputTokens:          rawOutputTokens,
+		ReasoningTokens:       reasoningTokens,
+		CachedTokens:          cacheReadTokens,
+		CacheReadTokens:       cacheReadTokens,
+		CacheCreationTokens:   cacheCreationTokens,
+		CacheCreation1hTokens: usageNode.Get("cache_creation.ephemeral_1h_input_tokens").Int(),
+		Speed:                 strings.TrimSpace(usageNode.Get("speed").String()),
 	}
 	if detail.CachedTokens == 0 {
 		detail.CachedTokens = detail.CacheCreationTokens
