@@ -1,0 +1,257 @@
+@use '../../styles/mixins' as *;
+
+/*
+ * Model series colors. Fixed order (validated with the dataviz palette script
+ * against each theme's card surface): opus, fable, sonnet, haiku, other.
+ * Light steps sit below 3:1 on the card surface for sonnet/haiku, so the
+ * per-model table under the chart is the required relief.
+ */
+.page {
+  --usage-opus: #2a78d6;
+  --usage-fable: #eb6834;
+  --usage-sonnet: #1baf7a;
+  --usage-haiku: #eda100;
+  --usage-other: var(--text-quaternary);
+}
+
+:global([data-theme='dark']) .page {
+  --usage-opus: #3987e5;
+  --usage-fable: #d95926;
+  --usage-sonnet: #199e70;
+  --usage-haiku: #c98500;
+}
+
+.family-opus {
+  background: var(--usage-opus);
+}
+.family-fable {
+  background: var(--usage-fable);
+}
+.family-sonnet {
+  background: var(--usage-sonnet);
+}
+.family-haiku {
+  background: var(--usage-haiku);
+}
+.family-other {
+  background: var(--usage-other);
+}
+
+/* ---------- Header ---------- */
+
+/* Controls sit under the title, clear of the floating header toolbar. */
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: $spacing-md;
+  margin-bottom: -16px;
+
+  h1 {
+    margin: 0;
+  }
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $spacing-sm;
+  min-width: 0;
+}
+
+.monthStepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border-radius: $radius-full;
+  border: 1px solid var(--border-color);
+  background: var(--bg-tertiary);
+}
+
+.monthButton {
+  @include button-reset;
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: $radius-full;
+  color: var(--text-secondary);
+  cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: -1px;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover:not(:disabled) {
+      color: var(--text-primary);
+      background: var(--bg-hover);
+    }
+  }
+}
+
+.monthLabel {
+  min-width: 112px;
+  padding: 0 $spacing-xs;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.accountSwitch {
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+/* ---------- Notices and footnotes ---------- */
+
+.notice {
+  margin: 0;
+  padding: $spacing-md $spacing-lg;
+  border-radius: 12px;
+  border: 1px solid var(--amber-30);
+  background: var(--amber-10);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.footnote {
+  margin: -24px 0 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-tertiary);
+}
+
+.footnote + .footnote {
+  margin-top: -40px;
+}
+
+/* ---------- Chart overrides (structure comes from the throughput chart) ---------- */
+
+.stack {
+  gap: 2px;
+}
+
+.segmentTop {
+  border-radius: $radius-sm $radius-sm 0 0;
+}
+
+.segmentFlat {
+  border-radius: 0;
+}
+
+.importedTick {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  border-radius: $radius-full;
+  background: var(--text-quaternary);
+}
+
+/* Opaque so the bars behind never show through the numbers. */
+.tooltip {
+  min-width: 184px;
+  background: var(--floating-surface, var(--bg-primary));
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.tooltipTotal {
+  display: flex;
+  justify-content: space-between;
+  gap: $spacing-md;
+  margin-top: 2px;
+  padding-top: 4px;
+  border-top: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.tooltipNote {
+  color: var(--text-tertiary);
+  font-size: 11px;
+}
+
+.tooltipValue {
+  margin-left: auto;
+  padding-left: $spacing-md;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Tables ---------- */
+
+.modelCell {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-sm;
+  white-space: nowrap;
+  color: var(--text-primary);
+  font-weight: 550;
+}
+
+.swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  flex: none;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.muted {
+  color: var(--text-tertiary);
+}
+
+.totalRow td {
+  font-weight: 650;
+  color: var(--text-primary);
+}
+
+.shareCell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: $spacing-sm;
+  min-width: 96px;
+}
+
+.shareMeter {
+  width: 56px;
+  flex: none;
+}
+
+.accountHint {
+  display: block;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-tertiary);
+  white-space: normal;
+}
+
+.empty {
+  margin: 0;
+  padding: $spacing-lg;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
